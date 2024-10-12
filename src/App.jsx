@@ -1,16 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Homepage from './pages/Homepage'
-import Footer from './components/Footer'
+import {Routes, Route} from 'react-router-dom';
 
-const App = () => {
+import Homepage from './pages/Homepage';
+import LoginPage from './pages/Login';
+import SignupPage from './pages/Signup';
+
+
+
+function App() {
+
   return (
-    <>
-    <Hpmepage />
-    <Footer/>
-    </>
+    <Routes>
+      <Route path='/' element={<Homepage />} />
+      <Route path='/login' element={<LoginPage />} />
+      <Route path='/signup' element={<SignupPage />} />
 
-  );
-};
+    </Routes>
+  )
+}
 
 export default App;

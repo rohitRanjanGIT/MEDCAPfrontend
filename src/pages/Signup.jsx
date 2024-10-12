@@ -1,56 +1,180 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Logo from '../assets/medcap_logo.png'; // Adjust path based on your structure
-import Header from '../components/Headder'; // Assuming the same Header component is used
+import Header from '../components/Header'; // Assuming the same Header component is used
+import serverUrl from '../components/server_url';
 
 const SignupPage = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    dob: '',
+    bloodType: '',
+    gender: ''
+  });
+
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page refresh
+
+    try {
+      const response = await fetch(`${serverUrl}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+      const result = await response.json();
+      setSuccessMessage('Registration successful! Please log in.');
+      setError(null);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        dob: '',
+        bloodType: '',
+        gender: ''
+      });
+
+      
+    } catch (error) {
+      setError(error.message);
+      setSuccessMessage(null);
+    }
+  };
+
   return (
     <div className="bg-pink-200 min-h-screen flex flex-col">
       {/* Header */}
       <Header />
 
       {/* Main Content */}
-      <main className="flex-grow container mx-auto px-4 py-12 flex items-center">
-        <div className="w-1/2">
-          <h1 className="text-5xl font-bold mb-4">
-            Join MedCap Today!
-          </h1>
+      <main className="flex-grow container mx-auto px-4 py-12 flex flex-col md:flex-row items-start">
+        {/* Form Section */}
+        <div className="w-full md:w-1/2 mb-8 md:mb-0">
+          <h1 className="text-5xl font-bold mb-4">Join MedCap Today!</h1>
           <p className="text-xl mb-8">
             Create your account to start your personalized health care journey.
           </p>
 
-          <form className="space-y-6">
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+          {successMessage && <div className="text-green-500 mb-4">{successMessage}</div>}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* First Name Field */}
             <div>
-              <label htmlFor="name" className="block text-lg font-medium">
-                Name
+              <label htmlFor="firstName" className="block text-lg font-medium">
+                First Name
               </label>
-              <input 
+              <input
                 type="text"
-                id="name"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
-                placeholder="Enter your full name"
+                placeholder="Enter your first name"
                 required
               />
             </div>
 
+            {/* Last Name Field */}
+            <div>
+              <label htmlFor="lastName" className="block text-lg font-medium">
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                placeholder="Enter your last name"
+                required
+              />
+            </div>
+
+            {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-lg font-medium">
                 Email
               </label>
-              <input 
+              <input
                 type="email"
                 id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your email"
                 required
               />
             </div>
 
+            {/* Password Field */}
             <div>
-              <label htmlFor="bloodtype" className="block text-lg font-medium">
+              <label htmlFor="password" className="block text-lg font-medium">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+
+            {/* Date of Birth Field */}
+            <div>
+              <label htmlFor="dob" className="block text-lg font-medium">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                required
+              />
+            </div>
+
+            {/* Blood Type Field */}
+            <div>
+              <label htmlFor="bloodType" className="block text-lg font-medium">
                 Blood Type
               </label>
               <select
-                id="bloodtype"
+                id="bloodType"
+                name="bloodType"
+                value={formData.bloodType}
+                onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 required
               >
@@ -66,33 +190,24 @@ const SignupPage = () => {
               </select>
             </div>
 
+            {/* Gender Field */}
             <div>
               <label htmlFor="gender" className="block text-lg font-medium">
                 Gender
               </label>
               <select
                 id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 required
               >
                 <option value="">Select your gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
               </select>
-            </div>
-
-            <div>
-              <label htmlFor="contact" className="block text-lg font-medium">
-                Contact Number
-              </label>
-              <input 
-                type="tel"
-                id="contact"
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
-                placeholder="Enter your contact number"
-                required
-              />
             </div>
 
             <button className="w-full bg-pink-400 text-white px-6 py-3 rounded-full text-lg">
@@ -106,10 +221,11 @@ const SignupPage = () => {
           </p>
         </div>
 
-        <div className="w-1/2 flex justify-center">
-          <div className="relative">
-            <div className="bg-#F8CDEA w-64 h-64 rounded-full"></div>
-            <img 
+        {/* Logo Section */}
+        <div className="w-full md:w-1/2 flex justify-center">
+          <div className="relative mt-8 md:mt-0">
+            <div className="bg-[#F8CDEA] w-64 h-64 rounded-full"></div>
+            <img
               src={Logo}
               alt="MedCap Logo"
               className="absolute top-0 left-0 w-full h-full object-contain"
@@ -119,7 +235,7 @@ const SignupPage = () => {
       </main>
 
       {/* Statistics */}
-      <div className="bg-purple-500 py-8">
+      <div className="bg-purple-500 py-8 px-12">
         <div className="container mx-auto flex justify-between text-white text-center">
           <div>
             <div className="text-4xl font-bold">15k+</div>

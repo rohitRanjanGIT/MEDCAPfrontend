@@ -1,6 +1,6 @@
 import AnalysisHistory from '../components/AnalysisHistory'
 import UserDetails from '../components/UserDetails'
-import Headder from '../components/Headder'
+import Headder from '../components/Header'
 import Footer from '../components/Footer'
 
 
