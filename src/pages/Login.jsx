@@ -46,7 +46,7 @@ const LoginPage = () => {
 
       // Clear the error and navigate to the dashboard after successful login
       setError(null);
-      navigate('/dashboard'); 
+      navigate('/dashboard');
       
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed. Please try again.');
