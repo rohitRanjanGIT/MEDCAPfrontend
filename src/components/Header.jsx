@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/medcap_logo.png';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if the user is logged in and set user data
+    const loggedInStatus = localStorage.getItem('loggedIn');
+    const storedUser = localStorage.getItem('user');
+
+    if (loggedInStatus === 'true' && storedUser) {
+      setIsLoggedIn(true);
+      setUser(JSON.parse(storedUser)); // Parse the user data from localStorage
+    }
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleProfileClick = () => {
+    // Redirect to the dashboard or profile page when the profile picture is clicked
+    navigate('/dashboard');
   };
 
   return (
@@ -14,10 +33,10 @@ const Header = () => {
       <nav className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link to={'/'}>
-        <div className="flex items-center">
-          <img src={logo} alt="MedCap Logo" className="w-10 h-10 mr-2 rounded-full" />
-          <span className="text-xl font-bold">MedCap</span>
-        </div>
+          <div className="flex items-center">
+            <img src={logo} alt="MedCap Logo" className="w-10 h-10 mr-2 rounded-full" />
+            <span className="text-xl font-bold">MedCap</span>
+          </div>
         </Link>
 
         {/* Hamburger Icon for Small Screens */}
@@ -48,25 +67,49 @@ const Header = () => {
           <Link to={`/`}><a className="text-gray-700 font-bold">Page</a></Link>
         </div>
 
-        {/* Log In Button */}
+        {/* Log In or Dashboard/Profile Picture */}
         <div className="hidden md:block">
-          <Link to={`/login`}>
-          <button className="bg-pink-400 text-white px-4 py-2 rounded-full font-bold">
-            Log In
-          </button>
-          </Link>
+          {isLoggedIn && user ? (
+            // Display profile picture and link to dashboard when logged in
+            <button onClick={handleProfileClick} className="flex items-center">
+              <img
+                src={user.profilePicture}
+                alt="User Profile"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            </button>
+          ) : (
+            // Display Log In button when not logged in
+            <Link to={`/login`}>
+              <button className="bg-pink-400 text-white px-4 py-2 rounded-full font-bold">
+                Log In
+              </button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="absolute top-16 left-0 w-full bg-pink-100 flex flex-col items-center space-y-4 py-4 md:hidden">
-            <a href="#" className="text-gray-700 font-bold">Home</a>
-            <a href="#" className="text-gray-700 font-bold">About</a>
-            <a href="#" className="text-gray-700 font-bold">Services</a>
-            <a href="#" className="text-gray-700 font-bold">Page</a>
-            <button className="bg-pink-400 text-white px-4 py-2 rounded-full font-bold">
-              Log In
-            </button>
+            <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
+            <Link to={`/`}><a className="text-gray-700 font-bold">About</a></Link>
+            <Link to={`/`}><a className="text-gray-700 font-bold">Services</a></Link>
+            <Link to={`/`}><a className="text-gray-700 font-bold">Page</a></Link>
+            {isLoggedIn && user ? (
+              <button onClick={handleProfileClick} className="flex items-center">
+                <img
+                  src={user.profilePicture}
+                  alt="User Profile"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              </button>
+            ) : (
+              <Link to={`/login`}>
+                <button className="bg-pink-400 text-white px-4 py-2 rounded-full font-bold">
+                  Log In
+                </button>
+              </Link>
+            )}
           </div>
         )}
       </nav>

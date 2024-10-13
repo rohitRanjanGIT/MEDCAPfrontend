@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'; // Import Axios
 import Logo from '../assets/medcap_logo.png'; // Adjust path based on your structure
 import Header from '../components/Header'; // Assuming the same Header component is used
 import serverUrl from '../components/server_url';
@@ -11,7 +12,10 @@ const SignupPage = () => {
     password: '',
     dob: '',
     bloodType: '',
-    gender: ''
+    gender: '',
+    phone: '',     // New field
+    height: '',    // New field
+    weight: ''     // New field
   });
 
   const [error, setError] = useState(null);
@@ -29,23 +33,15 @@ const SignupPage = () => {
     e.preventDefault(); // Prevent page refresh
 
     try {
-      const response = await fetch(`${serverUrl}/api/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      if (!response.ok) {
-        throw new Error('Registration failed');
-      }
+      const response = await axios.post(`${serverUrl}/api/auth/register`, formData);
 
-      const result = await response.json();
+      // Handle success response
       setSuccessMessage('Registration successful! Please log in.');
       setError(null);
+
+      // Clear form after successful submission
       setFormData({
         firstName: '',
         lastName: '',
@@ -53,12 +49,14 @@ const SignupPage = () => {
         password: '',
         dob: '',
         bloodType: '',
-        gender: ''
+        gender: '',
+        phone: '',     // Clear new field
+        height: '',    // Clear new field
+        weight: ''     // Clear new field
       });
 
-      
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message || 'Registration failed. Please try again.');
       setSuccessMessage(null);
     }
   };
@@ -208,6 +206,57 @@ const SignupPage = () => {
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
+            </div>
+
+            {/* Phone Number Field */}
+            <div>
+              <label htmlFor="phone" className="block text-lg font-medium">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                placeholder="Enter your phone number"
+                required
+              />
+            </div>
+
+            {/* Height Field */}
+            <div>
+              <label htmlFor="height" className="block text-lg font-medium">
+                Height (in cm)
+              </label>
+              <input
+                type="number"
+                id="height"
+                name="height"
+                value={formData.height}
+                onChange={handleChange}
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                placeholder="Enter your height in cm"
+                required
+              />
+            </div>
+
+            {/* Weight Field */}
+            <div>
+              <label htmlFor="weight" className="block text-lg font-medium">
+                Weight (in kg)
+              </label>
+              <input
+                type="number"
+                id="weight"
+                name="weight"
+                value={formData.weight}
+                onChange={handleChange}
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                placeholder="Enter your weight in kg"
+                required
+              />
             </div>
 
             <button className="w-full bg-pink-400 text-white px-6 py-3 rounded-full text-lg">

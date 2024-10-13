@@ -1,8 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios'; // Import Axios
 import Logo from '../assets/medcap_logo.png'; // Adjust path based on your structure
 import Header from '../components/Header'; // Assuming you have the same Header component
+import serverUrl from '../components/server_url'; // Assuming you have a server URL configuration
+import { useNavigate, Link } from 'react-router-dom'; // Import useNavigate
 
 const LoginPage = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null); // State to hold logged-in user data
+  const navigate = useNavigate(); // Initialize useNavigate hook
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`${serverUrl}/api/auth/login`, formData);
+
+      // Assuming the response data contains the user and token info
+      const { accessToken, user } = response.data;
+      
+      // Save the access token in localStorage
+      localStorage.setItem('accessToken', accessToken);
+
+      // Save user information in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Set loggedIn status in localStorage
+      localStorage.setItem('loggedIn', true);
+
+      // Update user state with the logged-in user data
+      setUser(user);
+
+      // Clear the error and navigate to the dashboard after successful login
+      setError(null);
+      navigate('/dashboard'); 
+      
+    } catch (error) {
+      setError(error.response?.data?.message || 'Login failed. Please try again.');
+    }
+  };
+
   return (
     <div className="bg-pink-200 min-h-screen flex flex-col">
       {/* Header */}
@@ -31,7 +81,9 @@ const LoginPage = () => {
             Please log in to access your personalized healthcare dashboard.
           </p>
 
-          <form className="space-y-6">
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-lg font-medium">
                 Email
@@ -39,6 +91,9 @@ const LoginPage = () => {
               <input 
                 type="email"
                 id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your email"
                 required
@@ -52,6 +107,9 @@ const LoginPage = () => {
               <input 
                 type="password"
                 id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your password"
                 required
@@ -65,7 +123,7 @@ const LoginPage = () => {
 
           <p className="mt-4 text-sm text-center md:text-left">
             Don't have an account?{' '}
-            <a href="/signup" className="text-pink-500 font-medium">Sign up here</a>.
+            <Link to="/signup" className="text-pink-500 font-medium">Sign up here</Link>.
           </p>
         </div>
       </main>
