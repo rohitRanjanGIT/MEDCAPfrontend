@@ -41,10 +41,15 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      const updatedUser = response.data.user;
   
-      onUpdate(response.data.user); // Call the onUpdate function to reflect the new data in the parent
+      onUpdate(updatedUser); // Call the onUpdate function to reflect the new data in the parent
       onClose(); // Close the form after submission
   
+      // Update the user in local storage
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
       // Reload or update the dashboard
       window.location.reload(); // Reload the page to reflect changes in the dashboard
   
@@ -52,7 +57,8 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
       console.error('Failed to update profile:', error);
       // Optionally display an error message to the user
     }
-  };
+};
+
   
 
   return (
