@@ -1,6 +1,7 @@
 import React from 'react';
 import { Phone, Mail, MapPin, Instagram, Facebook, Youtube, Twitter, Linkedin } from 'lucide-react';
-
+import Logo from '../assets/medcap_logo.png';
+ 
 const Footer = () => {
   return (
     <footer className="bg-purple-500 text-white py-12">
@@ -9,7 +10,7 @@ const Footer = () => {
           {/* Logo and Description */}
           <div className="col-span-1">
             <div className="flex items-center mb-4">
-              <img src="/api/placeholder/40/40" alt="MedCap Logo" className="w-10 h-10 mr-2 rounded-full bg-blue-600" />
+              <img src={Logo} alt="MedCap Logo" className="w-10 h-10 mr-2 rounded-full bg-blue-600" />
               <span className="text-xl font-bold">MedCap</span>
             </div>
             <p className="text-sm">
@@ -61,7 +62,7 @@ const Footer = () => {
             <h3 className="font-bold mb-4">Maps</h3>
             <div className="w-24 h-24 bg-white">
               {/* Placeholder for map */}
-              <img src="/api/placeholder/96/96" alt="Map" className="w-full h-full object-cover" />
+              <img src="/api/placeholder/96/" alt="Map" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
