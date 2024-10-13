@@ -16,7 +16,7 @@ const SignupPage = () => {
     phone: '',     // New field
     height: '',    // New field
     weight: '',    // New field
-    profilePicture: null // New field for the uploaded image
+    profilePicture: null 
   });
 
   const [error, setError] = useState(null);
