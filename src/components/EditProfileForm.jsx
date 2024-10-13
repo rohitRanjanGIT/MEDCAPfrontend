@@ -1,15 +1,20 @@
-// EditProfileForm.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import serverUrl from './server_url';
 
 const EditProfileForm = ({ user, onClose, onUpdate }) => {
+  // Initialize form data with additional fields
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
-    dateOfBirth: user.dob.split('T')[0], // Format date to input
-    profilePicture: null,
+    email: user.email,
+    phone: user.phone,
+    dob: user.dob.split('T')[0],
+    gender: user.gender,
+    bloodType: user.bloodType,
+    height: user.height || '',
+    weight: user.weight || '',
+    profilePicture: null, // For the profile picture upload
   });
 
   const handleChange = (e) => {
@@ -23,93 +28,202 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('accessToken');
-
+  
     try {
       const data = new FormData();
       for (const key in formData) {
         data.append(key, formData[key]);
       }
-
-      const response = await axios.put(`${serverUrl}/api/auth/user/${user.id}`, data, {
+  
+      const response = await axios.put(`${serverUrl}/api/auth/update`, data, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      onUpdate(response.data.user); // Call the update function passed as prop
+  
+      onUpdate(response.data.user); // Call the onUpdate function to reflect the new data in the parent
       onClose(); // Close the form after submission
+  
+      // Reload or update the dashboard
+      window.location.reload(); // Reload the page to reflect changes in the dashboard
+  
     } catch (error) {
       console.error('Failed to update profile:', error);
-      // You may want to show an error message here
+      // Optionally display an error message to the user
     }
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
         <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* First Name */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Contact Information */}
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium">
-              First Name
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            />
-          </div>
-          
-          {/* Last Name */}
+            <h3 className="text-lg font-semibold mb-2">Contact Information</h3>
+            
+            {/* Email */}
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium">
-              Last Name
-            </label>
+            <label htmlFor="email" className="block text-sm font-medium">Email</label>
             <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 bg-gray-200 cursor-not-allowed" // Added gray background and not-allowed cursor
+              disabled // This disables the input field
               required
             />
           </div>
 
-          {/* Date of Birth */}
+            {/* Phone Number */}
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Personal Information */}
           <div>
-            <label htmlFor="dateOfBirth" className="block text-sm font-medium">
-              Date of Birth
-            </label>
-            <input
-              type="date"
-              id="dateOfBirth"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            />
+            <h3 className="text-lg font-semibold mb-2">Personal Information</h3>
+            
+            {/* First Name */}
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                required
+              />
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-medium">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                required
+              />
+            </div>
+
+            {/* Date of Birth */}
+            <div>
+              <label htmlFor="dob" className="block text-sm font-medium">Date of Birth</label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                required
+              />
+            </div>
+
+            {/* Gender */}
+            <div>
+              <label htmlFor="gender" className="block text-sm font-medium">Gender</label>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Health Information */}
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Health Information</h3>
+            
+            {/* Blood Type */}
+            <div>
+              <label htmlFor="bloodType" className="block text-sm font-medium">Blood Type</label>
+              <select
+                id="bloodType"
+                name="bloodType"
+                value={formData.bloodType}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                required
+              >
+                <option value="">Select Blood Type</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+              </select>
+            </div>
+
+
+            {/* Height */}
+            <div>
+              <label htmlFor="height" className="block text-sm font-medium">Height (cm)</label>
+              <input
+                type="number"
+                id="height"
+                name="height"
+                value={formData.height}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+
+            {/* Weight */}
+            <div>
+              <label htmlFor="weight" className="block text-sm font-medium">Weight (kg)</label>
+              <input
+                type="number"
+                id="weight"
+                name="weight"
+                value={formData.weight}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
           </div>
 
           {/* Profile Picture */}
           <div>
-            <label htmlFor="profilePicture" className="block text-sm font-medium">
-              Profile Picture
-            </label>
+            <label htmlFor="profilePicture" className="block text-sm font-medium">Profile Picture</label>
             <input
               type="file"
               id="profilePicture"
               name="profilePicture"
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              accept="image/*" // Accept only image files
+              accept="image/*"
             />
           </div>
 
