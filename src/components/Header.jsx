@@ -62,9 +62,9 @@ const Header = () => {
         {/* Nav Links */}
         <div className={`hidden md:flex space-x-9`}>
           <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
-          <Link to={`/`}><a className="text-gray-700 font-bold">About</a></Link>
-          <Link to={`/`}><a className="text-gray-700 font-bold">Services</a></Link>
-          <Link to={`/`}><a className="text-gray-700 font-bold">Page</a></Link>
+          <Link to={`/`}><a className="text-gray-700 font-bold">Report</a></Link>
+          <Link to={`/`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
+          <Link to={`/`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
         </div>
 
         {/* Log In or Dashboard/Profile Picture */}
