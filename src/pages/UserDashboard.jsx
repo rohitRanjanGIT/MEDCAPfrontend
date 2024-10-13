@@ -1,56 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // To navigate on error
+import { useNavigate } from 'react-router-dom';
 import AnalysisHistory from '../components/AnalysisHistory';
 import UserDetails from '../components/UserDetails';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import EditProfileForm from '../components/EditProfileForm'; // Import the new component
 import serverUrl from '../components/server_url';
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
   const [analysisHistory, setAnalysisHistory] = useState([]);
-  const navigate = useNavigate(); // Initialize useNavigate for navigation
+  const [isEditing, setIsEditing] = useState(false); // State to control edit form visibility
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Get token from local storage
         const token = localStorage.getItem('accessToken');
-        
+
         if (!token) {
-          // If no token, redirect to login page
           navigate('/login');
           return;
         }
 
-        // Make the GET request with Authorization header
         const response = await axios.get(`${serverUrl}/api/auth/secure`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
 
-        // Extract user info and reports from the response
         const { user, medicalReports } = response.data;
 
-        // Set the state with the user info and analysis history (medical reports)
         setUser(user);
         setAnalysisHistory(medicalReports.reports);
 
       } catch (error) {
-        // If the request fails (e.g., invalid token), redirect to login page
         console.error('Failed to fetch user data:', error);
-        navigate('/login'); // Redirect to login page on error
+        navigate('/login');
       }
     };
 
-    // Fetch user data on component mount
     fetchUserData();
-  }, [navigate]); // Adding `navigate` as a dependency so the function has access to it
+  }, [navigate]);
 
   if (!user) {
-    // Show a loading state while fetching data
     return (
       <div className="min-h-screen flex justify-center items-center">
         <p>Loading...</p>
@@ -59,10 +53,14 @@ const UserDashboard = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken'); // Clear token on logout
-    localStorage.removeItem('user'); // Clear user data
-    localStorage.setItem('loggedIn', 'false'); // Set loggedIn to false
-    navigate('/login'); // Redirect to login page
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
+    localStorage.setItem('loggedIn', 'false');
+    navigate('/login');
+  };
+
+  const handleUpdateUser = (updatedUser) => {
+    setUser(updatedUser); // Update the user state with the new data
   };
 
   return (
@@ -85,7 +83,10 @@ const UserDashboard = () => {
               </div>
               <h2 className="text-xl font-semibold mb-2">{`${user.firstName} ${user.lastName}`}</h2>
               <p className="text-gray-600 mb-4">{user.dateOfBirth}</p>
-              <button className="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 transition duration-300">
+              <button 
+                className="bg-pink-500 text-white px-4 py-2 rounded-full hover:bg-pink-600 transition duration-300"
+                onClick={() => setIsEditing(true)} // Show the edit form on click
+              >
                 Edit Profile
               </button>
             </div>
@@ -101,13 +102,22 @@ const UserDashboard = () => {
           <div className="px-6 py-4 bg-gray-100 text-center">
             <button 
               className="bg-gray-500 text-white px-6 py-2 rounded-full hover:bg-gray-600 transition duration-300"
-              onClick={handleLogout} // Call handleLogout on click
+              onClick={handleLogout}
             >
               Logout
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modal for Editing Profile */}
+      {isEditing && (
+        <EditProfileForm 
+          user={user}
+          onClose={() => setIsEditing(false)} // Close the form
+          onUpdate={handleUpdateUser} // Pass the update function
+        />
+      )}
 
       <Footer />
     </>

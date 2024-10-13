@@ -15,17 +15,18 @@ const SignupPage = () => {
     gender: '',
     phone: '',     // New field
     height: '',    // New field
-    weight: ''     // New field
+    weight: '',    // New field
+    profilePicture: null // New field for the uploaded image
   });
 
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, files } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: type === 'file' ? files[0] : value // Handle file input separately
     });
   };
 
@@ -35,7 +36,17 @@ const SignupPage = () => {
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      const response = await axios.post(`${serverUrl}/api/auth/register`, formData);
+      // Create a FormData object to handle multipart/form-data
+      const data = new FormData();
+      for (const key in formData) {
+        data.append(key, formData[key]);
+      }
+
+      const response = await axios.post(`${serverUrl}/api/auth/register`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data' // Set the content type for the form data
+        }
+      });
 
       // Handle success response
       setSuccessMessage('Registration successful! Please log in.');
@@ -52,7 +63,8 @@ const SignupPage = () => {
         gender: '',
         phone: '',     // Clear new field
         height: '',    // Clear new field
-        weight: ''     // Clear new field
+        weight: '',    // Clear new field
+        profilePicture: null // Clear new field
       });
 
     } catch (error) {
@@ -255,6 +267,22 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your weight in kg"
+                required
+              />
+            </div>
+
+            {/* Profile Picture Field */}
+            <div>
+              <label htmlFor="profilePicture" className="block text-lg font-medium">
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                id="profilePicture"
+                name="profilePicture"
+                onChange={handleChange}
+                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                accept="image/*" // Accept only image files
                 required
               />
             </div>
