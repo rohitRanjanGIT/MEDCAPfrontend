@@ -3,7 +3,8 @@ import image from '../assets/aboutIMG.png'
 
 const About = () => {
   return (
-    <section className="bg-[#fbcfe8] py-16">
+    // <section className="bg-[#fbcfe8] py-16">
+    <section className="bg-[#ffffff] py-16">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold mb-8 text-center">About Us</h2>
         <div className="flex flex-col md:flex-row items-center">

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react'; 
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import serverUrl from '../components/server_url';
 import axios from 'axios';
+import LoadingPopup from '../components/LoadingPopup';
 
 const ReportSection = ({ reportContent }) => (
   <div className="bg-pink-100 p-6 rounded-lg mb-6">
@@ -30,7 +31,7 @@ const CardPlanSection = ({ title, cards }) => {
   };
 
   const prevCards = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 2 >= 0 ? prevIndex - 2 : prevIndex));
+    setCurrentIndex((prevIndex) => (prevIndex - 2 >= 0 ? prevIndex - 2 : 0));
   };
 
   return (
@@ -66,36 +67,28 @@ const CardPlanSection = ({ title, cards }) => {
 const HealthPlanDashboard = () => {
   const [medicalReports, setMedicalReports] = useState([]);
   const [latestAnalysis, setLatestAnalysis] = useState({});
-  const [loading, setLoading] = useState(true); // Changed loading to state
+  const [loading, setLoading] = useState(true);
 
   const fetchMedicalReports = async () => {
     try {
-      const accessToken = localStorage.getItem('accessToken'); // Get the accessToken from localStorage
+      const accessToken = localStorage.getItem('accessToken');
       if (!accessToken) {
         console.error("Access token not found");
         return;
       }
 
       const response = await axios.get(`${serverUrl}/api/auth/secure`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}` // Add Authorization header
-        }
+        headers: { Authorization: `Bearer ${accessToken}` }
       });
 
-      console.log('Medical Reports:', response.data.medicalReports); // Log the fetched reports
-      setMedicalReports(response.data.medicalReports); // Store the reports in state
-
-      // Extract the latest analysis based on createdAt
+      setMedicalReports(response.data.medicalReports);
       const latestReport = response.data.medicalReports.reduce((latest, report) => {
         return new Date(report.createdAt) > new Date(latest.createdAt) ? report : latest;
       }, response.data.medicalReports[0]);
 
-      // Parse the analysis string to JSON
       const parsedAnalysis = JSON.parse(latestReport.analysis);
       setLatestAnalysis(parsedAnalysis);
-      setLoading(false); // Set loading to false when data is fetched
-
-      console.log('Latest Analysis:', parsedAnalysis); // Log the parsed analysis
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching medical reports:', error);
     }
@@ -105,7 +98,6 @@ const HealthPlanDashboard = () => {
     fetchMedicalReports();
   }, []);
 
-  // Create separate cards for each section of the Diet Plan
   const dietCards = [
     {
       title: "Foods to Eat",
@@ -113,7 +105,7 @@ const HealthPlanDashboard = () => {
         icon: <span>🍏</span>,
         title: food.Food,
         description: food.Benefit,
-      })) || [], // Fallback to empty array if undefined
+      })) || [],
     },
     {
       title: "Foods to Avoid",
@@ -121,15 +113,19 @@ const HealthPlanDashboard = () => {
         icon: <span>🚫</span>,
         title: food.Food,
         description: food.Reason,
-      })) || [], // Fallback to empty array if undefined
+      })) || [],
     },
     {
       title: "Example Diet Plan",
-      description: Object.entries(latestAnalysis["Diet Plan"]?.["Example Diet Plan"] || {}).map(([mealType, meal], index) => ({
-        icon: <span>🍽️</span>,
-        title: mealType,
-        description: meal,
-      })) || [], // Fallback to empty array if undefined
+      description: Object.entries(latestAnalysis["Diet Plan"]?.["Example Diet Plan"] || {}).flatMap(([mealType, meal]) =>
+        Array.isArray(meal)
+          ? meal.map((item, index) => ({
+              icon: <span>🍽️</span>,
+              title: `${mealType}: ${item.Time}`,
+              description: item.Details,
+            }))
+          : []
+      ) || [],
     },
     {
       title: "Daily Calorie Intake",
@@ -148,7 +144,6 @@ const HealthPlanDashboard = () => {
     },
   ];
 
-  // Flatten the dietCards to make it easier for rendering
   const flattenedDietCards = dietCards.flatMap(card => 
     card.description.map(desc => ({
       title: card.title,
@@ -166,13 +161,13 @@ const HealthPlanDashboard = () => {
           <ul>
             {latestAnalysis["Lifestyle Plan"]?.Exercise?.map((exercise, index) => (
               <li key={index}>{exercise.Type} - {exercise.Frequency}, {exercise.Duration}</li>
-            )) || []} {/* Fallback to empty array if undefined */}
+            )) || []}
           </ul>
           <h4>Daily Activities:</h4>
           <ul>
             {latestAnalysis["Lifestyle Plan"]?.DailyPhysicalActivities?.map((activity, index) => (
               <li key={index}>{activity}</li>
-            )) || []} {/* Fallback to empty array if undefined */}
+            )) || []}
           </ul>
           <p>Minimum Exercise: {latestAnalysis["Lifestyle Plan"]?.MinimumTimes}</p>
         </div>
@@ -187,9 +182,9 @@ const HealthPlanDashboard = () => {
       description: (
         <div>
           <h4>At-Risk Diseases:</h4>
-          <p>{latestAnalysis["Precaution Plan"]?.AtRiskDiseases || 'N/A'}</p> {/* Fallback to 'N/A' if undefined */}
+          <p>{latestAnalysis["Precaution Plan"]?.AtRiskDiseases || 'N/A'}</p>
           <h4>Precautions:</h4>
-          <p>{latestAnalysis["Precaution Plan"]?.Precautions || 'N/A'}</p> {/* Fallback to 'N/A' if undefined */}
+          <p>{latestAnalysis["Precaution Plan"]?.Precautions || 'N/A'}</p>
         </div>
       ),
     },
@@ -198,16 +193,19 @@ const HealthPlanDashboard = () => {
   return (
     <>
       <Header />
-      {loading ? <div>Loading...</div> : (
+      {loading ? (
+        <LoadingPopup />
+      ) : (
         <div className="max-w-4xl mx-auto p-6">
           <div className="bg-purple-600 text-white p-6 rounded-t-lg">
             <h1 className="text-3xl font-bold mb-4">Healthcare Plan</h1>
-            <p className="text-sm">Lorem ipsum dolor sit amet consectetur. Convallis est urna adipiscing fringilla nulla diam lorem non mauris.</p>
+            <p className="text-sm">
+              Lorem ipsum dolor sit amet consectetur. Convallis est urna
+              adipiscing fringilla nulla diam lorem non mauris.
+            </p>
           </div>
           <div className="bg-pink-50 p-6 rounded-b-lg">
-            <ReportSection reportContent={latestAnalysis["Summary of Current Condition"] || 'N/A'} />
-            
-            {/* Separate Carousels for each plan */}
+            <ReportSection reportContent={latestAnalysis['Summary of Current Condition'] || 'N/A'} />
             <CardPlanSection title="Diet Plan" cards={flattenedDietCards} />
             <CardPlanSection title="Lifestyle Plan" cards={lifestyleCards} />
             <CardPlanSection title="Precaution Plan" cards={precautionCards} />

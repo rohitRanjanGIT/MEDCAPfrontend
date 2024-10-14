@@ -67,7 +67,7 @@ const UserDashboard = () => {
     <>
       <Header />
 
-      <div className="bg-pink-100 min-h-screen p-8">
+      <div className=" min-h-#fffff p-8">
         <div className="max-w-4xl mx-auto bg-pink-50 rounded-lg shadow-lg overflow-hidden">
           <h1 className="text-3xl font-bold text-center py-6 bg-pink-200 text-gray-800">User Dashboard</h1>
 

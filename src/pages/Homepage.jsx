@@ -1,5 +1,5 @@
 import React from 'react';
-import Heart from '../assets/mdc_logo.png';
+import Heart from '../assets/heart.png';
 import Logo from '../assets/medcap_logo.png';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -9,7 +9,8 @@ import Services from '../components/Services';
 const HomePage = () => {
   return (
     <>
-      <div className="bg-pink-200 min-h-screen flex flex-col">
+      {/* <div className="bg-pink-200 min-h-screen flex flex-col"> */}
+      <div className="#fffff min-h-screen flex flex-col">
         {/* Header */}
         <Header />
 
@@ -18,7 +19,7 @@ const HomePage = () => {
           {/* Image Section */}
           <div className="w-full md:w-1/2 flex justify-center">
             <div className="relative w-48 h-48 md:w-64 md:h-64">
-              <div className="bg-[#F8CDEA] w-full h-full rounded-full"></div>
+              <div className="bg-[#ffffff] w-full h-full rounded-full"></div>
               <img 
                 src={Heart}
                 alt="Heart with ECG" 
