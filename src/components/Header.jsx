@@ -62,9 +62,9 @@ const Header = () => {
         {/* Nav Links */}
         <div className={`hidden md:flex space-x-9`}>
           <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
-          <Link to={`/`}><a className="text-gray-700 font-bold">Report</a></Link>
-          <Link to={`/`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
-          <Link to={`/`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
+          <Link to={`/medicalreport`}><a className="text-gray-700 font-bold">Report</a></Link>
+          <Link to={`/healthcareplan`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
+          <Link to={`/dashboard`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
         </div>
 
         {/* Log In or Dashboard/Profile Picture */}
@@ -91,10 +91,10 @@ const Header = () => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="absolute top-16 left-0 w-full bg-pink-100 flex flex-col items-center space-y-4 py-4 md:hidden">
-            <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
-            <Link to={`/`}><a className="text-gray-700 font-bold">About</a></Link>
-            <Link to={`/`}><a className="text-gray-700 font-bold">Services</a></Link>
-            <Link to={`/`}><a className="text-gray-700 font-bold">Page</a></Link>
+          <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
+          <Link to={`/medicalreport`}><a className="text-gray-700 font-bold">Report</a></Link>
+          <Link to={`/healthcareplan`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
+          <Link to={`/dashboard`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
             {isLoggedIn && user ? (
               <button onClick={handleProfileClick} className="flex items-center">
                 <img

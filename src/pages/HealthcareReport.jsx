@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react'; 
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import serverUrl from '../components/server_url';
+import axios from 'axios';
 
 const ReportSection = ({ reportContent }) => (
   <div className="bg-pink-100 p-6 rounded-lg mb-6">
@@ -9,12 +13,12 @@ const ReportSection = ({ reportContent }) => (
 );
 
 const InfoCard = ({ icon, title, description }) => (
-  <div className="bg-pink-200 p-4 rounded-lg">
+  <div className="bg-pink-200 p-4 rounded-lg transition-transform transform hover:scale-105 mb-4">
     <div className="flex items-center mb-2">
       {icon}
       <h3 className="text-lg font-semibold ml-2">{title}</h3>
     </div>
-    <p className="text-sm text-gray-700">{description}</p>
+    <div className="text-sm text-gray-700">{description}</div>
   </div>
 );
 
@@ -60,41 +64,158 @@ const CardPlanSection = ({ title, cards }) => {
 };
 
 const HealthPlanDashboard = () => {
-  const reportContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ac risus nibh. Integer cursus nibh sed tincidunt volutpat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.";
+  const [medicalReports, setMedicalReports] = useState([]);
+  const [latestAnalysis, setLatestAnalysis] = useState({});
+  const [loading, setLoading] = useState(true); // Changed loading to state
 
-  const cardPlans = [
+  const fetchMedicalReports = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken'); // Get the accessToken from localStorage
+      if (!accessToken) {
+        console.error("Access token not found");
+        return;
+      }
+
+      const response = await axios.get(`${serverUrl}/api/auth/secure`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}` // Add Authorization header
+        }
+      });
+
+      console.log('Medical Reports:', response.data.medicalReports); // Log the fetched reports
+      setMedicalReports(response.data.medicalReports); // Store the reports in state
+
+      // Extract the latest analysis based on createdAt
+      const latestReport = response.data.medicalReports.reduce((latest, report) => {
+        return new Date(report.createdAt) > new Date(latest.createdAt) ? report : latest;
+      }, response.data.medicalReports[0]);
+
+      // Parse the analysis string to JSON
+      const parsedAnalysis = JSON.parse(latestReport.analysis);
+      setLatestAnalysis(parsedAnalysis);
+      setLoading(false); // Set loading to false when data is fetched
+
+      console.log('Latest Analysis:', parsedAnalysis); // Log the parsed analysis
+    } catch (error) {
+      console.error('Error fetching medical reports:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMedicalReports();
+  }, []);
+
+  // Create separate cards for each section of the Diet Plan
+  const dietCards = [
     {
-      title: "Diet Plan",
-      cards: [
-        { icon: <span>🥗</span>, title: "Personalized Nutrition Plans", description: "Receive a tailored nutrition plan designed specifically for your body and goals." },
-        { icon: <span>👩‍🏫</span>, title: "Guidance from Certified Nutritionists", description: "Our team of experienced and certified nutritionists will provide professional guidance." },
-        { icon: <span>📊</span>, title: "Food Tracking and Analysis", description: "Effortlessly track your food intake using our user-friendly app." },
-        { icon: <span>📝</span>, title: "Meal Planning and Recipes", description: "Access a vast collection of delicious and healthy recipes tailored to your dietary needs." },
-      ],
+      title: "Foods to Eat",
+      description: latestAnalysis["Diet Plan"]?.Eat?.map((food, index) => ({
+        icon: <span>🍏</span>,
+        title: food.Food,
+        description: food.Benefit,
+      })) || [], // Fallback to empty array if undefined
     },
     {
-      title: "Life Style Plan",
-      cards: [
-        { icon: <span>🏋️‍♀️</span>, title: "Lifestyle and Behavior Coaching", description: "Work with you to develop healthy habits, address emotional eating, and provide strategies." },
-        { icon: <span>🎓</span>, title: "Nutritional Education and Workshops", description: "Expand your knowledge of nutrition through informative articles and educational workshops." },
-        { icon: <span>🎓</span>, title: "Nutritional Education and Workshops", description: "Expand your knowledge of nutrition through informative articles and educational workshops." },
+      title: "Foods to Avoid",
+      description: latestAnalysis["Diet Plan"]?.Avoid?.map((food, index) => ({
+        icon: <span>🚫</span>,
+        title: food.Food,
+        description: food.Reason,
+      })) || [], // Fallback to empty array if undefined
+    },
+    {
+      title: "Example Diet Plan",
+      description: Object.entries(latestAnalysis["Diet Plan"]?.["Example Diet Plan"] || {}).map(([mealType, meal], index) => ({
+        icon: <span>🍽️</span>,
+        title: mealType,
+        description: meal,
+      })) || [], // Fallback to empty array if undefined
+    },
+    {
+      title: "Daily Calorie Intake",
+      description: [
+        {
+          icon: <span>📊</span>,
+          title: "Recommendation",
+          description: latestAnalysis["Diet Plan"]?.["Daily Calorie Intake"]?.Recommendation || 'Consult a dietitian for personalized advice.',
+        },
+        {
+          icon: <span>🧂</span>,
+          title: "Sodium Content",
+          description: latestAnalysis["Diet Plan"]?.["Daily Calorie Intake"]?.SodiumContent || 'Aim for less than 2,300 mg of sodium per day.',
+        },
       ],
     },
   ];
 
+  // Flatten the dietCards to make it easier for rendering
+  const flattenedDietCards = dietCards.flatMap(card => 
+    card.description.map(desc => ({
+      title: card.title,
+      ...desc,
+    }))
+  );
+
+  const lifestyleCards = [
+    {
+      icon: <span>🏋️‍♀️</span>,
+      title: "Lifestyle Plan",
+      description: (
+        <div>
+          <h4>Exercise Recommendations:</h4>
+          <ul>
+            {latestAnalysis["Lifestyle Plan"]?.Exercise?.map((exercise, index) => (
+              <li key={index}>{exercise.Type} - {exercise.Frequency}, {exercise.Duration}</li>
+            )) || []} {/* Fallback to empty array if undefined */}
+          </ul>
+          <h4>Daily Activities:</h4>
+          <ul>
+            {latestAnalysis["Lifestyle Plan"]?.DailyPhysicalActivities?.map((activity, index) => (
+              <li key={index}>{activity}</li>
+            )) || []} {/* Fallback to empty array if undefined */}
+          </ul>
+          <p>Minimum Exercise: {latestAnalysis["Lifestyle Plan"]?.MinimumTimes}</p>
+        </div>
+      ),
+    },
+  ];
+
+  const precautionCards = [
+    {
+      icon: <span>⚠️</span>,
+      title: "Precaution Plan",
+      description: (
+        <div>
+          <h4>At-Risk Diseases:</h4>
+          <p>{latestAnalysis["Precaution Plan"]?.AtRiskDiseases || 'N/A'}</p> {/* Fallback to 'N/A' if undefined */}
+          <h4>Precautions:</h4>
+          <p>{latestAnalysis["Precaution Plan"]?.Precautions || 'N/A'}</p> {/* Fallback to 'N/A' if undefined */}
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-purple-600 text-white p-6 rounded-t-lg">
-        <h1 className="text-3xl font-bold mb-4">Healthcare Plan</h1>
-        <p className="text-sm">Lorem ipsum dolor sit amet consectetur. Convallis est urna adipiscing fringilla nulla diam lorem non mauris.</p>
-      </div>
-      <div className="bg-pink-50 p-6 rounded-b-lg">
-        <ReportSection reportContent={reportContent} />
-        {cardPlans.map((plan, index) => (
-          <CardPlanSection key={index} title={plan.title} cards={plan.cards} />
-        ))}
-      </div>
-    </div>
+    <>
+      <Header />
+      {loading ? <div>Loading...</div> : (
+        <div className="max-w-4xl mx-auto p-6">
+          <div className="bg-purple-600 text-white p-6 rounded-t-lg">
+            <h1 className="text-3xl font-bold mb-4">Healthcare Plan</h1>
+            <p className="text-sm">Lorem ipsum dolor sit amet consectetur. Convallis est urna adipiscing fringilla nulla diam lorem non mauris.</p>
+          </div>
+          <div className="bg-pink-50 p-6 rounded-b-lg">
+            <ReportSection reportContent={latestAnalysis["Summary of Current Condition"] || 'N/A'} />
+            
+            {/* Separate Carousels for each plan */}
+            <CardPlanSection title="Diet Plan" cards={flattenedDietCards} />
+            <CardPlanSection title="Lifestyle Plan" cards={lifestyleCards} />
+            <CardPlanSection title="Precaution Plan" cards={precautionCards} />
+          </div>
+        </div>
+      )}
+      <Footer />
+    </>
   );
 };
 
