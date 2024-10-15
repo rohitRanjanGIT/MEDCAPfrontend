@@ -7,6 +7,7 @@ import About from '../components/AboutUs';
 import Services from '../components/Services';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import HealthSection from '../components/HeartBanner';
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -72,7 +73,7 @@ const HomePage = () => {
         </div>
 
       </div>
-      
+      <HealthSection/>
       <About/>
       <Services/>
       <Footer />
