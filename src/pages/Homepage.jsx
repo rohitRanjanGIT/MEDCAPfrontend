@@ -1,44 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Heart from '../assets/heart.png';
 import Logo from '../assets/medcap_logo.png';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import About from '../components/AboutUs';
 import Services from '../components/Services';
-import { useNavigate, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import HealthSection from '../components/HeartBanner';
+import { useNavigate, Link } from 'react-router-dom';
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-    useEffect(() => {
-    if (localStorage.getItem('loggedIn') === null) {
-      localStorage.setItem('loggedIn', false);
-    }
-
-    let loggedInStatus = localStorage.getItem('loggedIn');
+  useEffect(() => {
+    const loggedInStatus = localStorage.getItem('loggedIn') === 'true';
     const storedUser = localStorage.getItem('user');
 
-    if (loggedInStatus === 'true' && storedUser) {
+    if (loggedInStatus && storedUser) {
       setIsLoggedIn(true);
-      setUser(JSON.parse(storedUser)); // Parse the user data from localStorage
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
   return (
     <>
-      {/* <div className="bg-pink-200 min-h-screen flex flex-col"> */}
-      <div className="#fffff min-h-screen flex flex-col">
+      <div className="bg-gray-100 min-h-screen flex flex-col">
         {/* Header */}
         <Header />
 
         {/* Main Content */}
-        <main className="flex-grow container mx-auto px-4 py-12 px-12 flex flex-col md:flex-row items-center">
+        <main className="flex-grow container mx-auto px-6 py-12 flex flex-col md:flex-row items-center">
           {/* Image Section */}
-          <div className="w-full md:w-1/2 flex justify-center">
-            <div className="flex justify-center item-center m-3 w-full h-full relative w-48 h-48 md:w-64 md:h-64">
+          <div className="w-full md:w-1/2 flex justify-center mb-6 md:mb-0">
+            <div className="relative w-48 h-48 md:w-64 md:h-64">
               <img 
                 src={Heart}
                 alt="Heart with ECG" 
@@ -48,35 +42,57 @@ const HomePage = () => {
           </div>
 
           {/* Text Section */}
-          <div className="w-full md:w-1/2 mb-8 md:mb-0">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center md:text-left">
-              Cap your health,<br />with MedCap!
+          <div className="w-full md:w-1/2 text-center md:text-left">
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+              Cap your health with <span className="text-pink-600">MedCap!</span>
             </h1>
-            <p className="text-lg md:text-xl mb-8 text-center md:text-left">
-              Get a personalized health care plan to maximize your wellbeing
-              and live life to the fullest
+            <p className="text-lg md:text-xl mb-8">
+              Experience the power of AI-driven analysis. Our smart algorithms summarize your medical reports and provide personalized health recommendations to help you live your best life.
             </p>
-            <div className="flex justify-center md:justify-start">
-              <Link to={isLoggedIn ? `/medicalreport` : `/login`}>
-                <button className="bg-pink-400 text-white px-6 py-3 rounded-full text-lg">
-                  Get started
+            <div>
+              <Link to={isLoggedIn ? '/medicalreport' : '/login'}>
+                <button className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-full text-lg transition duration-300 ease-in-out">
+                  {isLoggedIn ? 'View Medical Report' : 'Get Started'}
                 </button>
               </Link>
             </div>
           </div>
         </main>
 
-        {/* Statistics */}
-        <div className="bg-purple-500 py-8">
-          <div className="container mx-auto pt-8 px-4 md:px-12 flex flex-col md:flex-row justify-between text-white text-center">
+        {/* Statistics Section */}
+        <section className="bg-purple-600 py-12 text-white text-center">
+          <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h2 className="text-3xl font-bold">10,000+</h2>
+              <p className="mt-2">Reports Analyzed</p>
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold">5,000+</h2>
+              <p className="mt-2">Happy Users</p>
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold">98%</h2>
+              <p className="mt-2">User Satisfaction</p>
+            </div>
           </div>
-        </div>
+        </section>
 
+        {/* Conditional Health Section */}
+        {isLoggedIn ? (
+          <HealthSection />
+        ) : (
+          <div className="bg-gray-200 py-8 text-center">
+            <p className="text-lg">Log in to upload your medical report and experience AI-driven insights and personalized health suggestions.</p>
+          </div>
+        )}
+
+        {/* Additional Sections */}
+        <About />
+        <Services />
+
+        {/* Footer */}
+        <Footer />
       </div>
-      <HealthSection/>
-      <About/>
-      <Services/>
-      <Footer />
     </>
   );
 };
