@@ -59,8 +59,7 @@ const LoginPage = () => {
       <Header />
 
       {/* Main Content */}
-      <main className="flex-grow container mx-auto px-12 py-12 flex flex-col md:flex-row items-center">
-        {/* Logo Section (will be on top on mobile, and on the right on larger screens) */}
+      <main className="flex-grow container mx-auto px-4 md:px-12 py-12 flex flex-col md:flex-row items-center"> {/* Set px-4 for mobile */}
         <div className="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
           <div className="relative w-48 h-48 md:w-64 md:h-64">
             <div className="bg-[#F8CDEA] w-full h-full rounded-full"></div>
@@ -74,10 +73,10 @@ const LoginPage = () => {
 
         {/* Form Section */}
         <div className="w-full md:w-1/2 px-4">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 text-center md:text-left">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center md:text-left"> {/* Increased text size for mobile */}
             Welcome Back to MedCap!
           </h1>
-          <p className="text-base md:text-xl mb-8 text-center md:text-left">
+          <p className="text-lg md:text-xl mb-8 text-center md:text-left"> {/* Increased text size for mobile */}
             Please log in to access your personalized healthcare dashboard.
           </p>
 
@@ -94,7 +93,7 @@ const LoginPage = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400" // Adjusted padding
                 placeholder="Enter your email"
                 required
               />
@@ -110,7 +109,7 @@ const LoginPage = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400" // Adjusted padding
                 placeholder="Enter your password"
                 required
               />
@@ -129,8 +128,8 @@ const LoginPage = () => {
       </main>
 
       {/* Statistics */}
-      <div className="bg-purple-500 py-8 px-12">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between text-white text-center">
+      <div className="bg-purple-500 py-8 px-4 md:px-12"> {/* Adjusted padding */}
+        <div className="container mx-auto flex flex-col md:flex-row justify-between text-white text-center">
           <div className="mb-4 md:mb-0">
             <div className="text-3xl md:text-4xl font-bold">10k+</div>
             <div>Users</div>

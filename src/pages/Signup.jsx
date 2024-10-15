@@ -4,6 +4,7 @@ import Logo from '../assets/medcap_logo.png'; // Adjust path based on your struc
 import Header from '../components/Header'; // Assuming the same Header component is used
 import serverUrl from '../components/server_url';
 import { useNavigate, Link } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const SignupPage = () => {
         phone: '',     // Clear new field
         height: '',    // Clear new field
         weight: '',    // Clear new field
-        profilePicture: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" // Clear new field
+        profilePicture: null // Reset profile picture field
       });
 
       navigate('/login');
@@ -83,12 +84,11 @@ const SignupPage = () => {
       <Header />
 
       {/* Main Content */}
-      <main className="flex-grow container mx-auto px-4 py-12 flex flex-col md:flex-row items-start">
-
+      <main className="flex-grow container mx-auto px-4 md:px-12 py-12 flex flex-col md:flex-row items-center"> {/* Updated padding for consistency */}
         {/* Logo Section */}
-        <div className="w-full md:w-1/2 flex justify-center">
-          <div className="relative mt-8 md:mt-0">
-            <div className="bg-[#F8CDEA] w-64 h-64 rounded-full"></div>
+        <div className="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
+          <div className="relative w-48 h-48 md:w-64 md:h-64">
+            <div className="bg-[#F8CDEA] w-full h-full rounded-full"></div>
             <img
               src={Logo}
               alt="MedCap Logo"
@@ -98,9 +98,11 @@ const SignupPage = () => {
         </div>
 
         {/* Form Section */}
-        <div className="w-full md:w-1/2 mb-8 md:mb-0">
-          <h1 className="text-5xl font-bold mb-4">Join MedCap Today!</h1>
-          <p className="text-xl mb-8">
+        <div className="w-full md:w-1/2 px-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center md:text-left"> {/* Increased text size for mobile */}
+            Join MedCap Today!
+          </h1>
+          <p className="text-lg md:text-xl mb-8 text-center md:text-left"> {/* Increased text size for mobile */}
             Create your account to start your personalized health care journey.
           </p>
 
@@ -119,7 +121,7 @@ const SignupPage = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your first name"
                 required
               />
@@ -136,7 +138,7 @@ const SignupPage = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your last name"
                 required
               />
@@ -153,7 +155,7 @@ const SignupPage = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your email"
                 required
               />
@@ -170,7 +172,7 @@ const SignupPage = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your password"
                 required
               />
@@ -187,7 +189,7 @@ const SignupPage = () => {
                 name="dob"
                 value={formData.dob}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 required
               />
             </div>
@@ -202,7 +204,7 @@ const SignupPage = () => {
                 name="bloodType"
                 value={formData.bloodType}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 required
               >
                 <option value="">Select your blood type</option>
@@ -227,7 +229,7 @@ const SignupPage = () => {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 required
               >
                 <option value="">Select your gender</option>
@@ -248,7 +250,7 @@ const SignupPage = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your phone number"
                 required
               />
@@ -265,7 +267,7 @@ const SignupPage = () => {
                 name="height"
                 value={formData.height}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your height in cm"
                 required
               />
@@ -282,7 +284,7 @@ const SignupPage = () => {
                 name="weight"
                 value={formData.weight}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 placeholder="Enter your weight in kg"
                 required
               />
@@ -298,23 +300,21 @@ const SignupPage = () => {
                 id="profilePicture"
                 name="profilePicture"
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 accept="image/*" // Accept only image files
               />
             </div>
 
-            <button className="w-full bg-pink-400 text-white px-6 py-3 rounded-full text-lg">
+            <button className="w-full bg-pink-400 text-white px-6 py-3 rounded-full text-lg hover:bg-pink-500 transition">
               Sign Up
             </button>
           </form>
 
-          <p className="mt-4 text-sm">
+          <p className="mt-4 text-sm text-center">
             Already have an account?{' '}
-            <a href="/login" className="text-pink-500 font-medium">Log in here</a>.
+            <Link to="/login" className="text-pink-500 font-medium">Log in here</Link>.
           </p>
         </div>
-
-        
       </main>
 
       {/* Statistics */}
@@ -334,6 +334,7 @@ const SignupPage = () => {
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

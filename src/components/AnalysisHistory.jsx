@@ -86,7 +86,7 @@ const AnalysisHistory = ({ history }) => {
               <div key={index} className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-300 ease-in-out transform hover:scale-102">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* Form Data Column */}
-                  <div className="flex flex-col justify-between h-full">
+                  <div className="flex flex-col justify-between h-full pt-4 md:pt-0 pb-2 md:pb-0">
                     <div>
                       <div className="flex items-center bg-blue-100 p-2 rounded-full mb-2">
                         <FaFileAlt className="text-blue-600" size={24} />
@@ -105,7 +105,7 @@ const AnalysisHistory = ({ history }) => {
                   </div>
 
                   {/* Attached File Content Column */}
-                  <div className="flex flex-col justify-between h-full">
+                  <div className="flex flex-col justify-between h-full py-2 md:py-0">
                     <div>
                       <div className="flex items-center bg-green-100 p-2 rounded-full mb-2">
                         <FaPaperclip className="text-green-600" size={24} />
@@ -122,7 +122,7 @@ const AnalysisHistory = ({ history }) => {
                   </div>
 
                   {/* Analysis Column */}
-                  <div className="flex flex-col justify-between h-full">
+                  <div className="flex flex-col justify-between h-full pt-2 md:pt-0 pb-4 md:pb-0">
                     <div>
                       <div className="flex items-center bg-yellow-100 p-2 rounded-full mb-2">
                         <FaSearch className="text-yellow-600" size={24} />

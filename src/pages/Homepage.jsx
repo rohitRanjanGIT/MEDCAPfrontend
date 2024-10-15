@@ -28,8 +28,9 @@ const HomePage = () => {
         {/* Header */}
         <Header />
 
+        <div className="relative">
         {/* Main Content */}
-        <main className="flex-grow container mx-auto px-6 py-12 flex flex-col md:flex-row items-center">
+        <main className="flex-grow min-h-[70vh] container mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-center">
           {/* Image Section */}
           <div className="w-full md:w-1/2 flex justify-center mb-6 md:mb-0">
             <div className="relative w-48 h-48 md:w-64 md:h-64">
@@ -59,6 +60,17 @@ const HomePage = () => {
           </div>
         </main>
 
+        {/* Conditional Health Section */}
+        {isLoggedIn ? (
+          <></>
+        ) : (
+          <div className="absolute top-0 left-0 right-0 bg-gray-200 py-4 text-center hidden md:block"> {/* Hidden on mobile */}
+            <p className="text-lg">Log in to upload your medical report and experience AI-driven insights and personalized health suggestions.</p>
+          </div>
+        )}
+      </div>
+
+      <HealthSection />
         {/* Statistics Section */}
         <section className="bg-purple-600 py-12 text-white text-center">
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -77,14 +89,7 @@ const HomePage = () => {
           </div>
         </section>
 
-        {/* Conditional Health Section */}
-        {isLoggedIn ? (
-          <HealthSection />
-        ) : (
-          <div className="bg-gray-200 py-8 text-center">
-            <p className="text-lg">Log in to upload your medical report and experience AI-driven insights and personalized health suggestions.</p>
-          </div>
-        )}
+        
 
         {/* Additional Sections */}
         <About />

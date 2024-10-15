@@ -67,11 +67,11 @@ const UserDashboard = () => {
         <LoadingPopup />
       ) : (
         <>
-          <div className="min-h-screen p-8">
+          <div className="min-h-screen px-4 md:px-8 py-8">
             <div className="max-w-4xl mx-auto bg-pink-50 rounded-lg shadow-lg overflow-hidden">
               <h1 className="text-3xl font-bold text-center py-6 bg-pink-200 text-gray-800">User Dashboard</h1>
 
-              <div className="p-6">
+              <div className="p-6 px-0 md:px-6">
                 <div className="mb-8 text-center">
                   <img 
                     src={user.profilePicture || "/api/placeholder/150/150"} 
