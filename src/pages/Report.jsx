@@ -5,16 +5,16 @@ import Footer from '../components/Footer';
 import serverUrl from '../components/server_url';
 import LoadingPopup from '../components/LoadingPopup';
 import { formatDate } from '../utils/utils';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const InputField = ({ label, name, type = "text", value, onChange, min, max }) => (
+const InputField = ({ label, name, type = "text", value, onChange, min, max, placeholder }) => (
   <div>
     <label className="block mb-2">{label}</label>
     <input
       type={type}
       name={name}
       className="w-full p-2 rounded"
-      placeholder={`Enter ${label.toLowerCase()}`}
+      placeholder={placeholder || `Enter ${label.toLowerCase()}`}
       value={value}
       onChange={onChange}
       min={min}
@@ -38,15 +38,25 @@ const MedicalReportForm = () => {
     notes: '',
     vegetarian: false,
     reportFile: null,
+    allergies: '',
+    medications: '',
+    lifestyleFactors: '',
+    vaccinationHistory: '',
+    chronicConditions: '',
+    preferredHealthcareProviders: '',
+    lastCheckupDate: '',
+    mentalHealthHistory: '',
+    pregnancyStatus: '',
+    healthGoals: '',
   });
 
   const [uploadedFile, setUploadedFile] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [loadingData, setLoadingData] = useState(false); // New loading state for data fetching
+  const [loadingData, setLoadingData] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [userData, setUserData] = useState(null); // New state for user data
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,7 +64,7 @@ const MedicalReportForm = () => {
     setAccessToken(token);
 
     if (token) {
-      setLoadingData(true); // Start loading data
+      setLoadingData(true);
       axios.get(`${serverUrl}/api/auth/secure`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,7 +76,6 @@ const MedicalReportForm = () => {
           ...prev,
           height: response.data.user.height || '',
           weight: response.data.user.weight || '',
-          // vegetarian: response.data.user.vegetarian || false,
         }));
       })
       .catch(err => {
@@ -75,7 +84,7 @@ const MedicalReportForm = () => {
         setErrorMessage('Failed to load user data.');
       })
       .finally(() => {
-        setLoadingData(false); // Stop loading data
+        setLoadingData(false);
       });
     }
   }, [serverUrl]);
@@ -115,11 +124,11 @@ const MedicalReportForm = () => {
     let newReport = '';
 
     newReport += 
-      `first name: ${userData.firstName} \n`+
-      `bloodType: ${userData.bloodType} \n`+
-      `gender: ${userData.gender} \n`+
-      `date of birth: ${formatDate(userData.dob)} \n`+
-      `is Vegetarian: ${formData.vegetarian} \n`
+      `First Name: ${userData.firstName} \n`+
+      `Blood Type: ${userData.bloodType} \n`+
+      `Gender: ${userData.gender} \n`+
+      `Date of Birth: ${formatDate(userData.dob)} \n`+
+      `Is Vegetarian: ${formData.vegetarian} \n`;
 
     for (const [key, value] of Object.entries(formData)) {
       if (value && key !== 'reportFile' && key !== 'vegetarian') {
@@ -148,8 +157,6 @@ const MedicalReportForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      console.log(form);
 
       await axios.post(`${serverUrl}/api/report/addrecord`, form, {
         headers: {
@@ -187,91 +194,83 @@ const MedicalReportForm = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                   </svg>
                   <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                  <p className="text-xs text-gray-500">PDF, DOC, JPG or PNG (MAX. 10MB)</p>
+                  <p className="text-xs text-gray-500">PDF (MAX. 10MB, must have extractable text)</p>
                 </div>
-                <input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} />
+                <input 
+                  id="dropzone-file" 
+                  type="file" 
+                  accept=".pdf" // Restrict to PDF files
+                  className="hidden" 
+                  onChange={handleFileChange} 
+                />
               </label>
             </div>
 
             {uploadedFile && (
               <div className="mt-4 flex items-center space-x-4">
                 <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v4a1 1 0 001 1h3m10 0h3a1 1 0 001-1V7a1 1 0 00-1-1h-3M5 11V7a1 1 0 011-1h10a1 1 0 011 1v4m-6 4v-2m0 2v2m0-2h-4m4 0h4"></path>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v4a1 1 0 001 1h3m10 0h3a1 1 0 001-1V7a1 1 0 00-1-1h-3M5 11V7a1 1 0 011-1h10a1 1 0 011 1v4m-6 4v-2m0 2v2m0-2h-4m4 0h4m-4 0h-4"></path>
                 </svg>
-                <span className="text-gray-700">{uploadedFile.name}</span>
-                <button type="button" onClick={handleRemoveFile} className="text-red-500 ml-2">Remove</button>
+                <p>{uploadedFile.name}</p>
+                <button onClick={handleRemoveFile} className="text-red-500">Remove</button>
               </div>
             )}
 
-            <h2 className="text-2xl font-bold mb-6 mt-8">Medical Data</h2>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <InputField label="Height (cm)" name="height" type="number" value={formData.height} onChange={handleChange} min="50" max="300" />
-                <InputField label="Weight (kg)" name="weight" type="number" value={formData.weight} onChange={handleChange} min="30" max="500" />
-                <InputField label="Blood Pressure (mmHg)" name="bloodPressure" value={formData.bloodPressure} onChange={handleChange} />
-                <InputField label="Heart Rate (bpm)" name="heartRate" type="number" value={formData.heartRate} onChange={handleChange} min="30" max="200" />
-                <InputField label="Cholesterol (mg/dL)" name="cholesterol" type="number" value={formData.cholesterol} onChange={handleChange} min="100" max="500" />
-                <InputField label="Blood Sugar (mg/dL)" name="bloodSugar" type="number" value={formData.bloodSugar} onChange={handleChange} min="50" max="400" />
-                <InputField label="BMI" name="bmi" type="number" value={formData.bmi} onChange={handleChange} min="10" max="50" />
-                <InputField label="Blood Count" name="bloodCount" value={formData.bloodCount} onChange={handleChange} />
-              </div>
+            <p className="mt-4 text-xs text-gray-500">
+              Please ensure the PDF contains extractable text to facilitate processing.
+            </p>
 
-              <div>
-                <label className="block mb-2">Health History</label>
-                <textarea
-                  name="healthHistory"
-                  className="w-full p-2 rounded"
-                  placeholder="Enter your health history"
-                  value={formData.healthHistory}
-                  onChange={handleChange}
-                />
-              </div>
+            <form onSubmit={handleSubmit}>
+            <h2 className="text-2xl font-bold mb-4 mt-8">Personal Information</h2>
+            <InputField label="Height" name="height" type="number" value={formData.height} onChange={handleChange} placeholder="Enter your height in centimeters (e.g., 170)" />
+            <InputField label="Weight" name="weight" type="number" value={formData.weight} onChange={handleChange} placeholder="Enter your weight in kilograms (e.g., 70)" />
 
-              <div>
-                <label className="block mb-2">Additional Problems</label>
-                <textarea
-                  name="additionalProblems"
-                  className="w-full p-2 rounded"
-                  placeholder="Any additional problems?"
-                  value={formData.additionalProblems}
-                  onChange={handleChange}
-                />
-              </div>
+            <h2 className="text-2xl font-bold mb-4 mt-8">Vital Signs</h2>
+            <InputField label="Blood Pressure" name="bloodPressure" value={formData.bloodPressure} onChange={handleChange} placeholder="Enter your blood pressure reading (e.g., 120/80 mmHg)" />
+            <InputField label="Heart Rate" name="heartRate" type="number" value={formData.heartRate} onChange={handleChange} placeholder="Enter your heart rate in beats per minute (bpm, e.g., 75)" />
+            <InputField label="Cholesterol" name="cholesterol" value={formData.cholesterol} onChange={handleChange} placeholder="Enter your total cholesterol level (e.g., 200 mg/dL)" />
+            <InputField label="Blood Sugar" name="bloodSugar" value={formData.bloodSugar} onChange={handleChange} placeholder="Enter your blood sugar level (e.g., 90 mg/dL)" />
+            <InputField label="BMI" name="bmi" type="number" value={formData.bmi} onChange={handleChange} placeholder="Enter your Body Mass Index (e.g., 22.5)" />
+            <InputField label="Blood Count" name="bloodCount" value={formData.bloodCount} onChange={handleChange} placeholder="Enter your latest blood count results (e.g., 5.0 million cells/mcL)" />
+            <InputField label="Last Checkup Date" name="lastCheckupDate" type="date" value={formData.lastCheckupDate} onChange={handleChange} placeholder="Select the date of your last health checkup" />
 
-              <div>
-                <label className="block mb-2">Notes</label>
-                <textarea
-                  name="notes"
-                  className="w-full p-2 rounded"
-                  placeholder="Any notes?"
-                  value={formData.notes}
-                  onChange={handleChange}
-                />
-              </div>
+            <h2 className="text-2xl font-bold mb-4 mt-8">Health History</h2>
+            <InputField label="Health History" name="healthHistory" value={formData.healthHistory} onChange={handleChange} placeholder="Enter any relevant health history (e.g., past illnesses, surgeries)" />
+            <InputField label="Chronic Conditions" name="chronicConditions" value={formData.chronicConditions} onChange={handleChange} placeholder="List any chronic conditions you have (e.g., diabetes, hypertension)" />
+            <InputField label="Mental Health History" name="mentalHealthHistory" value={formData.mentalHealthHistory} onChange={handleChange} placeholder="Share your mental health history (e.g., anxiety, depression)" />
+            <InputField label="Pregnancy Status" name="pregnancyStatus" value={formData.pregnancyStatus} onChange={handleChange} placeholder="Indicate if you are pregnant (e.g., Yes/No)" />
+            <InputField label="Vaccination History" name="vaccinationHistory" value={formData.vaccinationHistory} onChange={handleChange} placeholder="List any vaccinations you have received (e.g., flu shot, COVID-19)" />
 
-              <h2 className="text-2xl font-bold mb-4 mt-8">Preferences</h2>
-              <div className="flex items-center mb-4">
-                <label className="block mb-2">Vegetarian</label>
+            <h2 className="text-2xl font-bold mb-4 mt-8">Lifestyle and Preferences</h2>
+            <InputField label="Lifestyle Factors" name="lifestyleFactors" value={formData.lifestyleFactors} onChange={handleChange} placeholder="Describe your lifestyle factors (e.g., activity level, smoking, alcohol use)" />
+            <InputField label="Allergies" name="allergies" value={formData.allergies} onChange={handleChange} placeholder="List any known allergies (e.g., pollen, peanuts)" />
+            <InputField label="Medications" name="medications" value={formData.medications} onChange={handleChange} placeholder="Enter any medications you are currently taking (e.g., aspirin, metformin)" />
+            <InputField label="Health Goals" name="healthGoals" value={formData.healthGoals} onChange={handleChange} placeholder="Describe your health goals (e.g., lose weight, increase fitness)" />
+            <InputField label="Additional Problems" name="additionalProblems" value={formData.additionalProblems} onChange={handleChange} placeholder="Mention any additional health problems or concerns" />
+            <InputField label="Notes" name="notes" value={formData.notes} onChange={handleChange} placeholder="Enter any other relevant notes or information" />
+            <InputField label="Preferred Healthcare Providers" name="preferredHealthcareProviders" value={formData.preferredHealthcareProviders} onChange={handleChange} placeholder="List your preferred healthcare providers (e.g., family doctor, specialist)" />
+                          
+
+              <div className="flex items-center mt-4">
                 <input
                   type="checkbox"
-                  name="vegetarian"
                   checked={formData.vegetarian}
                   onChange={handleSliderChange}
-                  className="ml-4"
+                  className="mr-2"
                 />
+                <label>Vegetarian</label>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-purple-500 text-white p-2 rounded hover:bg-purple-600 transition"
+                className="mt-4 bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-700"
               >
                 Submit Report
               </button>
             </form>
 
-            {loadingData && <LoadingPopup />} {/* Show loading popup while fetching data */}
-            {loading && <LoadingPopup message="Generating Healthcare Plans..."/>} {/* Show loading popup while submitting report */}
-            {error && <LoadingPopup message='Error Occured Please try again'/>}
+            {loading && <LoadingPopup error={error} message='Generating Healthcare Plans...'/>}
+            {error && <LoadingPopup error={error} message={errorMessage || "Something went wrong..."}/>}
           </div>
         </div>
       </div>

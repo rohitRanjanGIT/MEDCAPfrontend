@@ -6,6 +6,7 @@ import SignupPage from './pages/Signup';
 import UserDashboard from './pages/UserDashboard';
 import MedicalReportForm from './pages/Report';
 import HealthPlanDashboard from './pages/HealthcareReport';
+import ErrorBoundary from './components/ErrorBoundary';
 
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
       <Route path='/signup' element={<SignupPage />} />
       <Route path='/dashboard' element={<UserDashboard />} />
       <Route path='/medicalreport' element={<MedicalReportForm />} />
-      <Route path='/healthcareplan' element={<HealthPlanDashboard />} />
+      <Route path='/healthcareplan' element={<ErrorBoundary><HealthPlanDashboard /></ErrorBoundary>} />
     </Routes>
   )
 }

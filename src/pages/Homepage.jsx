@@ -67,23 +67,7 @@ const HomePage = () => {
 
         {/* Statistics */}
         <div className="bg-purple-500 py-8">
-          <div className="container mx-auto px-4 md:px-12 flex flex-col md:flex-row justify-between text-white text-center">
-            <div className="mb-4 md:mb-0">
-              <div className="text-3xl md:text-4xl font-bold">8+</div>
-              <div>Experienced</div>
-            </div>
-            <div className="mb-4 md:mb-0">
-              <div className="text-3xl md:text-4xl font-bold">122+</div>
-              <div>Teams</div>
-            </div>
-            <div className="mb-4 md:mb-0">
-              <div className="text-3xl md:text-4xl font-bold">563+</div>
-              <div>Clients</div>
-            </div>
-            <div className="mb-4 md:mb-0">
-              <div className="text-3xl md:text-4xl font-bold">232+</div>
-              <div>Project Done</div>
-            </div>
+          <div className="container mx-auto pt-8 px-4 md:px-12 flex flex-col md:flex-row justify-between text-white text-center">
           </div>
         </div>
 

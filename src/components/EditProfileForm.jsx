@@ -3,7 +3,6 @@ import axios from 'axios';
 import serverUrl from './server_url';
 
 const EditProfileForm = ({ user, onClose, onUpdate }) => {
-  // Initialize form data with additional fields
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
@@ -14,7 +13,7 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
     bloodType: user.bloodType,
     height: user.height || '',
     weight: user.weight || '',
-    profilePicture: null, // For the profile picture upload
+    profilePicture: null,
   });
 
   const handleChange = (e) => {
@@ -28,13 +27,13 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('accessToken');
-  
+
     try {
       const data = new FormData();
       for (const key in formData) {
         data.append(key, formData[key]);
       }
-  
+
       const response = await axios.put(`${serverUrl}/api/auth/update`, data, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -43,47 +42,39 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
       });
 
       const updatedUser = response.data.user;
-  
-      onUpdate(updatedUser); // Call the onUpdate function to reflect the new data in the parent
-      onClose(); // Close the form after submission
-  
-      // Update the user in local storage
-      localStorage.setItem('user', JSON.stringify(updatedUser));
 
-      // Reload or update the dashboard
-      window.location.reload(); // Reload the page to reflect changes in the dashboard
-  
+      onUpdate(updatedUser);
+      onClose();
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      window.location.reload();
+
     } catch (error) {
       console.error('Failed to update profile:', error);
-      // Optionally display an error message to the user
     }
-};
-
-  
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full overflow-y-auto max-h-[90vh]"> {/* Added max height and overflow */}
         <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Contact Information */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Contact Information</h3>
-            
             {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2 bg-gray-200 cursor-not-allowed" // Added gray background and not-allowed cursor
-              disabled // This disables the input field
-              required
-            />
-          </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2 bg-gray-200 cursor-not-allowed"
+                disabled
+                required
+              />
+            </div>
 
             {/* Phone Number */}
             <div>
@@ -103,7 +94,6 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
           {/* Personal Information */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Personal Information</h3>
-            
             {/* First Name */}
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium">First Name</label>
@@ -168,7 +158,6 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
           {/* Health Information */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Health Information</h3>
-            
             {/* Blood Type */}
             <div>
               <label htmlFor="bloodType" className="block text-sm font-medium">Blood Type</label>
@@ -191,7 +180,6 @@ const EditProfileForm = ({ user, onClose, onUpdate }) => {
                 <option value="AB-">AB-</option>
               </select>
             </div>
-
 
             {/* Height */}
             <div>
