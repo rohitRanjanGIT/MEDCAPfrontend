@@ -68,6 +68,8 @@ const HealthPlanDashboard = () => {
   const [medicalReports, setMedicalReports] = useState([]);
   const [latestAnalysis, setLatestAnalysis] = useState({});
   const [loading, setLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [loaderMessage, setLoaderMessage] = useState("Loading...");
 
   const fetchMedicalReports = async () => {
     try {
@@ -80,7 +82,6 @@ const HealthPlanDashboard = () => {
       const response = await axios.get(`${serverUrl}/api/auth/secure`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
-
       setMedicalReports(response.data.medicalReports);
       const latestReport = response.data.medicalReports.reduce((latest, report) => {
         return new Date(report.createdAt) > new Date(latest.createdAt) ? report : latest;
@@ -90,6 +91,14 @@ const HealthPlanDashboard = () => {
       setLatestAnalysis(parsedAnalysis);
       setLoading(false);
     } catch (error) {
+        setIsError(true);
+        if (medicalReports.length == 0 ){
+          setLoaderMessage("Please send a report!");
+        }
+        else{
+          setLoaderMessage("Something went wrong!");
+        }
+      
       console.error('Error fetching medical reports:', error);
     }
   };
@@ -194,7 +203,7 @@ const HealthPlanDashboard = () => {
     <>
       <Header />
       {loading ? (
-        <LoadingPopup />
+        <LoadingPopup error={isError} message={loaderMessage}/>
       ) : (
         <div className="max-w-4xl mx-auto p-6">
           <div className="bg-purple-600 text-white p-6 rounded-t-lg">

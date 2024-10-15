@@ -5,8 +5,27 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import About from '../components/AboutUs';
 import Services from '../components/Services';
+import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 const HomePage = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+    useEffect(() => {
+    if (localStorage.getItem('loggedIn') === null) {
+      localStorage.setItem('loggedIn', false);
+    }
+
+    let loggedInStatus = localStorage.getItem('loggedIn');
+    const storedUser = localStorage.getItem('user');
+
+    if (loggedInStatus === 'true' && storedUser) {
+      setIsLoggedIn(true);
+      setUser(JSON.parse(storedUser)); // Parse the user data from localStorage
+    }
+  }, []);
+
   return (
     <>
       {/* <div className="bg-pink-200 min-h-screen flex flex-col"> */}
@@ -18,12 +37,11 @@ const HomePage = () => {
         <main className="flex-grow container mx-auto px-4 py-12 px-12 flex flex-col md:flex-row items-center">
           {/* Image Section */}
           <div className="w-full md:w-1/2 flex justify-center">
-            <div className="relative w-48 h-48 md:w-64 md:h-64">
-              <div className="bg-[#ffffff] w-full h-full rounded-full"></div>
+            <div className="flex justify-center item-center m-3 w-full h-full relative w-48 h-48 md:w-64 md:h-64">
               <img 
                 src={Heart}
                 alt="Heart with ECG" 
-                className="absolute top-0 left-0 w-full h-full object-contain"
+                className="w-full h-full object-contain"
               />
             </div>
           </div>
@@ -38,9 +56,11 @@ const HomePage = () => {
               and live life to the fullest
             </p>
             <div className="flex justify-center md:justify-start">
-              <button className="bg-pink-400 text-white px-6 py-3 rounded-full text-lg">
-                Get started
-              </button>
+              <Link to={isLoggedIn ? `/medicalreport` : `/login`}>
+                <button className="bg-pink-400 text-white px-6 py-3 rounded-full text-lg">
+                  Get started
+                </button>
+              </Link>
             </div>
           </div>
         </main>

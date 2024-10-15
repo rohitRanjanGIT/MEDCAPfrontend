@@ -5,18 +5,21 @@ import AnalysisHistory from '../components/AnalysisHistory';
 import UserDetails from '../components/UserDetails';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import EditProfileForm from '../components/EditProfileForm'; // Import the new component
+import EditProfileForm from '../components/EditProfileForm';
 import serverUrl from '../components/server_url';
+import LoadingPopup from '../components/LoadingPopup'; // Import the LoadingPopup component
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
   const [analysisHistory, setAnalysisHistory] = useState([]);
-  const [isEditing, setIsEditing] = useState(false); // State to control edit form visibility
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true); // State to control loading status
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        setLoading(true); // Set loading to true before fetching data
         const token = localStorage.getItem('accessToken');
 
         if (!token) {
@@ -34,23 +37,16 @@ const UserDashboard = () => {
 
         setUser(user);
         setAnalysisHistory(medicalReports.reports);
-
       } catch (error) {
         console.error('Failed to fetch user data:', error);
         navigate('/login');
+      } finally {
+        setLoading(false); // Set loading to false after the data fetch attempt
       }
     };
 
     fetchUserData();
   }, [navigate]);
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <p>Loading...</p>
-      </div>
-    );
-  }
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -63,11 +59,15 @@ const UserDashboard = () => {
     setUser(updatedUser); // Update the user state with the new data
   };
 
+
   return (
     <>
       <Header />
 
-      <div className=" min-h-#fffff p-8">
+      {loading ? (
+        <LoadingPopup/>
+      ) : (<>
+      <div className="min-h-screen p-8">
         <div className="max-w-4xl mx-auto bg-pink-50 rounded-lg shadow-lg overflow-hidden">
           <h1 className="text-3xl font-bold text-center py-6 bg-pink-200 text-gray-800">User Dashboard</h1>
 
@@ -119,6 +119,7 @@ const UserDashboard = () => {
         />
       )}
 
+      </>)}
       <Footer />
     </>
   );

@@ -59,7 +59,7 @@ const LoginPage = () => {
       <Header />
 
       {/* Main Content */}
-      <main className="flex-grow container mx-auto px-12 py-12 flex flex-col md:flex-row-reverse items-center">
+      <main className="flex-grow container mx-auto px-12 py-12 flex flex-col md:flex-row items-center">
         {/* Logo Section (will be on top on mobile, and on the right on larger screens) */}
         <div className="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
           <div className="relative w-48 h-48 md:w-64 md:h-64">

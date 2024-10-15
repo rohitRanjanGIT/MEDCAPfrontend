@@ -9,8 +9,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if the user is logged in and set user data
-    const loggedInStatus = localStorage.getItem('loggedIn');
+    if (localStorage.getItem('loggedIn') === null) {
+      localStorage.setItem('loggedIn', false);
+    }
+
+    let loggedInStatus = localStorage.getItem('loggedIn');
     const storedUser = localStorage.getItem('user');
 
     if (loggedInStatus === 'true' && storedUser) {
@@ -24,7 +27,6 @@ const Header = () => {
   };
 
   const handleProfileClick = () => {
-    // Redirect to the dashboard or profile page when the profile picture is clicked
     navigate('/dashboard');
   };
 
@@ -61,16 +63,26 @@ const Header = () => {
 
         {/* Nav Links */}
         <div className={`hidden md:flex space-x-9`}>
-          <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
-          <Link to={`/medicalreport`}><a className="text-gray-700 font-bold">Report</a></Link>
-          <Link to={`/healthcareplan`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
-          <Link to={`/dashboard`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
+          {isLoggedIn ? (
+            <>
+              <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
+              <Link to={`/medicalreport`}><a className="text-gray-700 font-bold">Report</a></Link>
+              <Link to={`/healthcareplan`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
+              <Link to={`/dashboard`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
+            </>
+          ) : (
+            <>
+              <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
+              <Link to={`/login`}><a className="text-gray-700 font-bold">Report</a></Link>
+              <Link to={`/login`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
+              <Link to={`/login`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
+            </>
+          )}
         </div>
 
         {/* Log In or Dashboard/Profile Picture */}
         <div className="hidden md:block">
           {isLoggedIn && user ? (
-            // Display profile picture and link to dashboard when logged in
             <button onClick={handleProfileClick} className="flex items-center">
               <img
                 src={user.profilePicture}
@@ -79,7 +91,6 @@ const Header = () => {
               />
             </button>
           ) : (
-            // Display Log In button when not logged in
             <Link to={`/login`}>
               <button className="bg-pink-400 text-white px-4 py-2 rounded-full font-bold">
                 Log In
@@ -90,11 +101,22 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="absolute top-16 left-0 w-full bg-pink-100 flex flex-col items-center space-y-4 py-4 md:hidden">
-          <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
-          <Link to={`/medicalreport`}><a className="text-gray-700 font-bold">Report</a></Link>
-          <Link to={`/healthcareplan`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
-          <Link to={`/dashboard`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
+          <div className="absolute top-16 left-0 w-full bg-pink-100 flex flex-col items-center space-y-4 py-4 z-50 md:hidden">
+            {isLoggedIn ? (
+              <>
+                <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
+                <Link to={`/medicalreport`}><a className="text-gray-700 font-bold">Report</a></Link>
+                <Link to={`/healthcareplan`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
+                <Link to={`/dashboard`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
+              </>
+            ) : (
+              <>
+                <Link to={`/`}><a className="text-gray-700 font-bold">Home</a></Link>
+                <Link to={`/login`}><a className="text-gray-700 font-bold">Report</a></Link>
+                <Link to={`/login`}><a className="text-gray-700 font-bold">Healthcare-Plan</a></Link>
+                <Link to={`/login`}><a className="text-gray-700 font-bold">Dashboard</a></Link>
+              </>
+            )}
             {isLoggedIn && user ? (
               <button onClick={handleProfileClick} className="flex items-center">
                 <img

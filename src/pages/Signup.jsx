@@ -3,8 +3,10 @@ import axios from 'axios'; // Import Axios
 import Logo from '../assets/medcap_logo.png'; // Adjust path based on your structure
 import Header from '../components/Header'; // Assuming the same Header component is used
 import serverUrl from '../components/server_url';
+import { useNavigate, Link } from 'react-router-dom';
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -64,8 +66,10 @@ const SignupPage = () => {
         phone: '',     // Clear new field
         height: '',    // Clear new field
         weight: '',    // Clear new field
-        profilePicture: null // Clear new field
+        profilePicture: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" // Clear new field
       });
+
+      navigate('/login');
 
     } catch (error) {
       setError(error.response?.data?.message || 'Registration failed. Please try again.');
@@ -80,6 +84,19 @@ const SignupPage = () => {
 
       {/* Main Content */}
       <main className="flex-grow container mx-auto px-4 py-12 flex flex-col md:flex-row items-start">
+
+        {/* Logo Section */}
+        <div className="w-full md:w-1/2 flex justify-center">
+          <div className="relative mt-8 md:mt-0">
+            <div className="bg-[#F8CDEA] w-64 h-64 rounded-full"></div>
+            <img
+              src={Logo}
+              alt="MedCap Logo"
+              className="absolute top-0 left-0 w-full h-full object-contain"
+            />
+          </div>
+        </div>
+
         {/* Form Section */}
         <div className="w-full md:w-1/2 mb-8 md:mb-0">
           <h1 className="text-5xl font-bold mb-4">Join MedCap Today!</h1>
@@ -283,7 +300,6 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-pink-400 focus:border-pink-400"
                 accept="image/*" // Accept only image files
-                required
               />
             </div>
 
@@ -298,17 +314,7 @@ const SignupPage = () => {
           </p>
         </div>
 
-        {/* Logo Section */}
-        <div className="w-full md:w-1/2 flex justify-center">
-          <div className="relative mt-8 md:mt-0">
-            <div className="bg-[#F8CDEA] w-64 h-64 rounded-full"></div>
-            <img
-              src={Logo}
-              alt="MedCap Logo"
-              className="absolute top-0 left-0 w-full h-full object-contain"
-            />
-          </div>
-        </div>
+        
       </main>
 
       {/* Statistics */}
