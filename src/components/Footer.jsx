@@ -1,82 +1,47 @@
-import React from 'react';
-import { Box, Container, Grid, Typography, IconButton } from '@mui/material';
-import { Phone, Mail, LocationOn, Instagram, Facebook, YouTube, Twitter, LinkedIn } from '@mui/icons-material';
-import Logo from '../assets/medcap_logo.png';
+import { Link } from 'react-router-dom';
+import Logo from './ui/Logo';
+import EcgLine from './ui/EcgLine';
 
-const Footer = () => {
-  return (
-    <Box sx={{ backgroundColor: '#673ab7', color: 'white', padding: '40px 0' }}>
-      <Container>
-        <Grid container spacing={4}>
-          {/* Logo and Description */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Box display="flex" alignItems="center">
-              <img 
-                src={Logo} 
-                alt="MedCap Logo" 
-                style={{ width: 50, height: 50, borderRadius: '50%', marginRight: 16 }} // Smaller and circular logo
-              />
-              <Typography variant="h6" component="span">MedCap</Typography>
-            </Box>
-            <Typography variant="body2" sx={{ marginTop: 2 }}>
-              Your partner in healthcare solutions.
-            </Typography>
-          </Grid>
+const Footer = () => (
+  <footer className="relative mt-auto overflow-hidden bg-ink text-paper">
+    <EcgLine className="pointer-events-none h-14 w-full text-brand-500/40" animate={false} width={1.5} />
+    <div className="container relative pb-14 pt-6">
+      <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="max-w-sm">
+          <Logo inverted />
+          <p className="mt-5 text-pretty text-[15px] leading-relaxed text-paper/65">
+            Upload a lab report, get a plain-language summary and a personal plan for food, movement and
+            precautions. Built to help you prepare for a conversation with your doctor — not replace it.
+          </p>
+        </div>
 
-          {/* Services */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" gutterBottom>Services</Typography>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-              <li>Psychotherapy</li>
-              <li>Mental Counseling</li>
-              <li>Support Groups</li>
-              <li>Case Management</li>
-            </ul>
-          </Grid>
+        <div>
+          <p className="eyebrow text-paper/45">Product</p>
+          <ul className="mt-4 space-y-2.5 text-[15px]">
+            <li><Link className="text-paper/80 transition hover:text-white" to="/medicalreport">Analyse a report</Link></li>
+            <li><Link className="text-paper/80 transition hover:text-white" to="/healthcareplan">Your health plan</Link></li>
+            <li><Link className="text-paper/80 transition hover:text-white" to="/dashboard">Dashboard</Link></li>
+          </ul>
+        </div>
 
-          {/* Contact */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" gutterBottom>Contact</Typography>
-            <Typography variant="body2" display="flex" alignItems="center">
-              <Phone sx={{ marginRight: 1 }} /> +14 5464 8272
-            </Typography>
-            <Typography variant="body2" display="flex" alignItems="center">
-              <Mail sx={{ marginRight: 1 }} /> rona@domain.com
-            </Typography>
-            <Typography variant="body2" display="flex" alignItems="center">
-              <LocationOn sx={{ marginRight: 1 }} /> Lazyy Tower 192, Bum Swiss
-            </Typography>
-          </Grid>
+        <div>
+          <p className="eyebrow text-paper/45">Account</p>
+          <ul className="mt-4 space-y-2.5 text-[15px]">
+            <li><Link className="text-paper/80 transition hover:text-white" to="/signup">Create an account</Link></li>
+            <li><Link className="text-paper/80 transition hover:text-white" to="/login">Log in</Link></li>
+            <li><a className="text-paper/80 transition hover:text-white" href="/#how-it-works">How it works</a></li>
+          </ul>
+        </div>
+      </div>
 
-          {/* Links */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" gutterBottom>Links</Typography>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-              <li>Privacy Policy</li>
-              <li>Term Of Use</li>
-            </ul>
-          </Grid>
-        </Grid>
-
-        {/* Divider */}
-        <Box sx={{ borderTop: '1px solid white', marginY: 4 }} />
-
-        {/* Social Media and Copyright */}
-        <Box textAlign="center">
-          <div>
-            <IconButton sx={{ color: 'white', margin: '0 5px' }}><Instagram fontSize="small" /></IconButton>
-            <IconButton sx={{ color: 'white', margin: '0 5px' }}><Facebook fontSize="small" /></IconButton>
-            <IconButton sx={{ color: 'white', margin: '0 5px' }}><YouTube fontSize="small" /></IconButton>
-            <IconButton sx={{ color: 'white', margin: '0 5px' }}><Twitter fontSize="small" /></IconButton>
-            <IconButton sx={{ color: 'white', margin: '0 5px' }}><LinkedIn fontSize="small" /></IconButton>
-          </div>
-          <Typography variant="body2" sx={{ marginTop: 2 }}>
-            © 2023 MedCap. All rights reserved.
-          </Typography>
-        </Box>
-      </Container>
-    </Box>
-  );
-};
+      <div className="mt-14 flex flex-col gap-3 border-t border-paper/10 pt-6 text-sm text-paper/50 md:flex-row md:items-center md:justify-between">
+        <p>© {new Date().getFullYear()} MedCap AI. All rights reserved.</p>
+        <p className="max-w-xl text-pretty md:text-right">
+          MedCap provides AI-generated information, not medical advice. Always consult a qualified clinician.
+        </p>
+      </div>
+    </div>
+  </footer>
+);
 
 export default Footer;
